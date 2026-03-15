@@ -1,4 +1,3 @@
-# faiss_loader.py
 import os
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
@@ -7,24 +6,16 @@ from langchain_groq import ChatGroq
 
 load_dotenv()
 
-# ── Single consistent path ────────────────────────────────────────────────────
 DB_PATH = "faiss_index"
 
-def load_faiss_tutor(k: int = 4, temperature: float = 0.3):
-    """
-    Loads FAISS vector store and returns a tutor callable.
-    Uses HuggingFace embeddings (free, no server needed)
-    and Groq LLM (free API, fast).
-    """
+def load_faiss_tutor(k: int = 6, temperature: float = 0.3):
 
-    # ── Embeddings (free, runs on CPU, no API key needed) ─────────────────────
     embeddings = HuggingFaceEmbeddings(
         model_name="all-MiniLM-L6-v2",
         model_kwargs={"device": "cpu"},
         encode_kwargs={"normalize_embeddings": True},
     )
 
-    # ── Build absolute path so it works on any server ─────────────────────────
     base_dir = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.join(base_dir, DB_PATH)
 
@@ -34,7 +25,6 @@ def load_faiss_tutor(k: int = 4, temperature: float = 0.3):
             "Run build_vector_db.py first to create it."
         )
 
-    # ── Load FAISS index ──────────────────────────────────────────────────────
     vectorstore = FAISS.load_local(
         full_path,
         embeddings,
@@ -43,37 +33,59 @@ def load_faiss_tutor(k: int = 4, temperature: float = 0.3):
 
     retriever = vectorstore.as_retriever(search_kwargs={"k": k})
 
-    # ── Load Groq LLM (free API) ──────────────────────────────────────────────
     llm = ChatGroq(
         model="llama-3.3-70b-versatile",
-        api_key=os.getenv("groq_api_key"),
+        api_key=os.getenv("GROQ_API_KEY"),
         temperature=temperature,
     )
 
-    # ── Tutor callable ────────────────────────────────────────────────────────
     def tutor(query: str):
         docs = retriever.invoke(query)
         context = "\n\n".join(doc.page_content for doc in docs)
 
-        prompt = f"""You are an AI Tutor on an automated learning platform.
+        prompt = f"""You are an expert AI Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
+You teach like a senior professor — clear, detailed, structured, and engaging.
 
-Rules:
-- Use document context when relevant
-- If context is incomplete, explain using general knowledge
-- Never refuse to answer
-- Teach clearly and progressively
+STRICT RULES:
+- Always give a DETAILED and COMPLETE answer — never give a short or vague response
+- Use the document context when relevant
+- If context is incomplete, use your full knowledge to explain thoroughly
+- Use proper Markdown formatting: headings, bullet points, numbered steps, code blocks
+- Always include a real-world example or analogy
+- Explain WHY things work, not just WHAT they are
+- If it involves math or an algorithm, explain it step by step
+- End with key takeaways the student must remember
 
 Document Context:
 {context}
 
-Question:
+Student Question:
 {query}
 
-Answer with:
-1. Direct answer
-2. Explanation
-3. Example (if useful)
-4. Learning note (if beyond the document)
+YOUR DETAILED ANSWER:
+
+## 📌 Direct Answer
+[Clear 2-3 line direct answer]
+
+## 📖 Detailed Explanation
+[Thorough explanation — minimum 150 words]
+[Break into sub-sections if needed]
+[Explain the intuition, not just the definition]
+
+## 🔢 How It Works (Step by Step)
+[Numbered steps for algorithmic or mathematical concepts]
+
+## 💡 Real-World Example
+[Concrete relatable example with analogy]
+
+## 🧑‍💻 Code Example
+[Simple Python snippet demonstrating the concept]
+
+## 🎯 Key Takeaways
+[3-5 bullet points to remember]
+
+## 📚 Explore Next
+[1-2 related topics to study next]
 """
         return llm.invoke(prompt)
 
