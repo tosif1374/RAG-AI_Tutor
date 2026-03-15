@@ -1,0 +1,39 @@
+[server]
+headless = true
+port = 10000
+
+[theme]
+primaryColor = "#4f46e5"
+backgroundColor = "#0f172a"
+secondaryBackgroundColor = "#1e293b"
+textColor = "#e2e8f0"
+```
+
+---
+
+## Step 4 — Create `Procfile`
+
+In project root create a file called exactly `Procfile` (capital P, no extension):
+```
+web: streamlit run app.py --server.port=10000 --server.address=0.0.0.0
+```
+
+---
+
+## Step 5 — Check Your Project Structure
+
+Your folder should look exactly like this before pushing:
+```
+DPChatbot/
+├── app.py
+├── faiss_loader.py
+├── build_vector_db.py
+├── faiss_index/          ← must exist, must be committed
+├── Machine-Learning-Systems.pdf
+├── requirements.txt
+├── Procfile              ← new
+├── .env                  ← NOT pushed (in .gitignore)
+├── .env.example          ← new, safe to push
+├── .gitignore
+└── .streamlit/
+    └── config.toml       ← new
