@@ -178,15 +178,15 @@ with st.sidebar:
 
     st.divider()
     st.markdown("**Powered by**")
-    st.markdown("🔗 LangChain + FAISS")
-    st.markdown("⚡ Groq LLaMA 3.3 70B")
-    st.markdown("🧠 HuggingFace Embeddings")
+    st.markdown(" LangChain + FAISS")
+    st.markdown(" Groq LLaMA 3.3 70B")
+    st.markdown("HuggingFace Embeddings")
     st.divider()
-    st.markdown("**📚 Knowledge Base**")
+    st.markdown("** Knowledge Base**")
     st.markdown("• Machine Learning Systems PDF")
     st.markdown("• TDS Articles (ML/DL/NLP/LLM)")
     st.divider()
-    if st.button("🗑️  Clear Chat", use_container_width=True):
+    if st.button("  Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
     total_q = len([m for m in st.session_state.messages if m["role"] == "user"])
