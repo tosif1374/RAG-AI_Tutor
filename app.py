@@ -1,4 +1,3 @@
-# app.py — ChatGPT style UI
 import streamlit as st
 from faiss_loader import load_faiss_tutor
 import time
@@ -31,13 +30,17 @@ st.markdown("""
     padding: 14px 18px;
     border-radius: 18px 18px 18px 4px;
     margin: 8px 0;
-    max-width: 80%;
+    max-width: 82%;
     font-size: 15px;
-    line-height: 1.7;
+    line-height: 1.8;
     border: 1px solid #334155;
 }
-.label {color: #64748b; font-size: 12px; margin-bottom: 2px;}
-[data-testid="stSidebar"] {background-color: #0f172a; border-right: 1px solid #1e293b;}
+.label      { color: #64748b; font-size: 12px; margin-bottom: 2px; }
+.label-right{ color: #64748b; font-size: 12px; margin-bottom: 2px; text-align: right; }
+[data-testid="stSidebar"] {
+    background-color: #0f172a;
+    border-right: 1px solid #1e293b;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -49,22 +52,24 @@ with st.sidebar:
     st.markdown("## 🎓 AI Learning Tutor")
     st.divider()
     st.markdown("**Powered by**")
-    st.markdown(" LangChain + FAISS")
-    st.markdown(" Groq LLaMA 3.3 70B")
-    st.markdown("HuggingFace Embeddings")
+    st.markdown("🔗 LangChain + FAISS")
+    st.markdown("⚡ Groq LLaMA 3.3 70B")
+    st.markdown("🧠 HuggingFace Embeddings")
     st.divider()
-    st.markdown("**Knowledge Base**")
+    st.markdown("**📚 Knowledge Base**")
     st.markdown("• Machine Learning Systems PDF")
     st.markdown("• TDS Articles (ML/DL/NLP/LLM)")
     st.divider()
-    if st.button(" Clear Chat", use_container_width=True):
+    if st.button("🗑️ Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
-    total_q = len([m for m in st.session_state.get("messages",[]) if m["role"]=="user"])
+    total_q = len([m for m in st.session_state.get("messages", [])
+                   if m["role"] == "user"])
     st.metric("Questions Asked", total_q)
 
 st.markdown("### 🎓 AI Learning Tutor")
 st.markdown("*Ask anything about Machine Learning, Deep Learning, NLP & LLMs*")
+st.divider()
 
 with st.spinner("Loading AI model..."):
     tutor = get_tutor()
@@ -72,39 +77,40 @@ with st.spinner("Loading AI model..."):
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if len(st.session_state.messages) == 0:
-    st.markdown("#### 💡 Suggested Questions")
-    cols = st.columns(2)
-    suggestions = [
-        "What is backpropagation?",
-        "Explain transformer architecture",
-        "What is RAG in LLMs?",
-        "How does LSTM work?",
-        "What is attention mechanism?",
-        "Explain gradient descent",
-    ]
-    for i, s in enumerate(suggestions):
-        with cols[i % 2]:
-            if st.button(s, use_container_width=True, key=f"s{i}"):
-                st.session_state.messages.append({"role":"user","content":s})
-                st.rerun()
-
 for msg in st.session_state.messages:
     if msg["role"] == "user":
-        st.markdown(f'<div class="label" style="text-align:right">You</div><div class="user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="label-right">You</div>'
+            f'<div class="user-bubble">{msg["content"]}</div>',
+            unsafe_allow_html=True)
     else:
-        st.markdown(f'<div class="label">🎓 AI Tutor</div><div class="assistant-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="label">🎓 AI Tutor</div>'
+            f'<div class="assistant-bubble">{msg["content"]}</div>',
+            unsafe_allow_html=True)
 
 if prompt := st.chat_input("Ask about ML, DL, NLP, LLMs..."):
-    st.session_state.messages.append({"role":"user","content":prompt})
-    st.markdown(f'<div class="label" style="text-align:right">You</div><div class="user-bubble">{prompt}</div>', unsafe_allow_html=True)
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    st.markdown(
+        f'<div class="label-right">You</div>'
+        f'<div class="user-bubble">{prompt}</div>',
+        unsafe_allow_html=True)
 
     with st.spinner("Thinking..."):
-        start = time.time()
+        start    = time.time()
         response = tutor(prompt)
-        latency = time.time() - start
-        answer = response.content if hasattr(response,"content") else str(response)
+        latency  = time.time() - start
+        answer   = response.content if hasattr(response, "content") else str(response)
 
-    st.markdown(f'<div class="label">🎓 AI Tutor</div><div class="assistant-bubble">{answer}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div style="color:#475569;font-size:12px;text-align:right">⏱ {latency:.2f}s</div>', unsafe_allow_html=True)
-    st.session_state.messages.append({"role":"assistant","content":answer})
+    st.markdown(
+        f'<div class="label">🎓 AI Tutor</div>'
+        f'<div class="assistant-bubble">{answer}</div>',
+        unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div style="color:#475569;font-size:12px;text-align:right;">'
+        f'⏱ {latency:.2f}s</div>',
+        unsafe_allow_html=True)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})
