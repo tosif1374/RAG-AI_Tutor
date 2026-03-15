@@ -72,19 +72,19 @@ YOUR DETAILED ANSWER:
 [Break into sub-sections if needed]
 [Explain the intuition, not just the definition]
 
-## 🔢 How It Works (Step by Step)
+##  How It Works (Step by Step)
 [Numbered steps for algorithmic or mathematical concepts]
 
-## 💡 Real-World Example
+##  Real-World Example
 [Concrete relatable example with analogy]
 
-## 🧑‍💻 Code Example
+##  Code Example
 [Simple Python snippet demonstrating the concept]
 
-## 🎯 Key Takeaways
+##  Key Takeaways
 [3-5 bullet points to remember]
 
-## 📚 Explore Next
+##  Explore Next
 [1-2 related topics to study next]
 """
         return llm.invoke(prompt)
