@@ -108,4 +108,3 @@ for i in tqdm(range(0, len(chunks), BATCH_SIZE), desc="Embedding batches"):
 #  Save index 
 vectorstore.save_local(VECTOR_DB_PATH)
 print(f"\nFAISS index saved to: {VECTOR_DB_PATH}/")
-print("Now commit faiss_index/ to GitHub and deploy on Render.")
