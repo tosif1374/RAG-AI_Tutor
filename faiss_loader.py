@@ -42,24 +42,24 @@ def load_faiss_tutor(k: int = 6, temperature: float = 0.2):
     def tutor(query: str):
 
         greetings = ["hi", "hello", "hey", "hlo", "sup", "yo", "good morning", "greetings"]
-    if query.strip().lower() in greetings:
-        return "👋 Hello! I'm your AI Tutor. Ask me anything about Machine Learning, Deep Learning, NLP, or LLMs!"
+        if query.strip().lower() in greetings:
+            return "👋 Hello! I'm your AI Tutor. Ask me anything about Machine Learning, Deep Learning, NLP, or LLMs!"
 
-    ml_keywords = [
-        "machine learning", "deep learning", "nlp", "neural", "model", "training",
-        "transformer", "llm", "embedding", "classification", "regression",
-        "clustering", "gradient", "algorithm", "dataset", "overfitting",
-        "backpropagation", "attention", "encoder", "decoder", "loss", "epoch",
-        "bias", "variance", "feature", "vector", "bayes", "tree", "forest",
-        "cnn", "rnn", "lstm", "bert", "gpt", "rag", "fine-tune", "tokenization"
-    ]
-    if not any(kw in query.lower() for kw in ml_keywords):
-        return "⚠️ I specialize only in ML, DL, NLP & LLMs. Please ask a relevant question!"
+        ml_keywords = [
+            "machine learning", "deep learning", "nlp", "neural", "model", "training",
+            "transformer", "llm", "embedding", "classification", "regression",
+            "clustering", "gradient", "algorithm", "dataset", "overfitting",
+            "backpropagation", "attention", "encoder", "decoder", "loss", "epoch",
+            "bias", "variance", "feature", "vector", "bayes", "tree", "forest",
+            "cnn", "rnn", "lstm", "bert", "gpt", "rag", "fine-tune", "tokenization"
+        ]
+        if not any(kw in query.lower() for kw in ml_keywords):
+            return "⚠️ I specialize only in ML, DL, NLP & LLMs. Please ask a relevant question!"
 
-    docs = retriever.invoke(query)
-    context = "\n\n".join(doc.page_content for doc in docs)
+        docs = retriever.invoke(query)
+        context = "\n\n".join(doc.page_content for doc in docs)
 
-    system_prompt = """You are an expert AI Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
+        system_prompt = """You are an expert AI Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
 You teach like a senior professor — clear, detailed, structured, and engaging.
 
 STRICT RULES:
@@ -70,15 +70,15 @@ STRICT RULES:
 - For code concepts, always include a working code example
 
 RESPONSE STRUCTURE:
-1. In short — one clear sentence
-2. Detailed Explanation — thorough breakdown
-3. Math / Algorithm Steps — step by step with formulas (if applicable)
-4. Real-World Example or Analogy
-5. Key Takeaways — 3 to 5 bullet points"""
+1. 🎯 Direct Answer — one clear sentence
+2. 📖 Detailed Explanation — thorough breakdown
+3. 🔢 Math / Algorithm Steps — step by step with formulas (if applicable)
+4. 💡 Real-World Example or Analogy
+5. 🧠 Key Takeaways — 3 to 5 bullet points"""
 
-    full_prompt = f"{system_prompt}\n\nContext:\n{context}\n\nQuestion: {query}\nAnswer:"
+        full_prompt = f"{system_prompt}\n\nContext:\n{context}\n\nQuestion: {query}\nAnswer:"
 
-    response = llm.invoke(full_prompt)
-    return response.content
+        response = llm.invoke(full_prompt)
+        return response.content
 
     return tutor
