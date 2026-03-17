@@ -40,46 +40,45 @@ def load_faiss_tutor(k: int = 6, temperature: float = 0.2):
     )
 
     def tutor(query: str):
-        docs = retriever.invoke(query)
-        context = "\n\n".join(doc.page_content for doc in docs)
 
-        system_prompt = """You are an expert AI Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
+        greetings = ["hi", "hello", "hey", "hlo", "sup", "yo", "good morning", "greetings"]
+    if query.strip().lower() in greetings:
+        return "👋 Hello! I'm your AI Tutor. Ask me anything about Machine Learning, Deep Learning, NLP, or LLMs!"
+
+    ml_keywords = [
+        "machine learning", "deep learning", "nlp", "neural", "model", "training",
+        "transformer", "llm", "embedding", "classification", "regression",
+        "clustering", "gradient", "algorithm", "dataset", "overfitting",
+        "backpropagation", "attention", "encoder", "decoder", "loss", "epoch",
+        "bias", "variance", "feature", "vector", "bayes", "tree", "forest",
+        "cnn", "rnn", "lstm", "bert", "gpt", "rag", "fine-tune", "tokenization"
+    ]
+    if not any(kw in query.lower() for kw in ml_keywords):
+        return "⚠️ I specialize only in ML, DL, NLP & LLMs. Please ask a relevant question!"
+
+    docs = retriever.invoke(query)
+    context = "\n\n".join(doc.page_content for doc in docs)
+
+    system_prompt = """You are an expert AI Tutor specializing in Machine Learning, Deep Learning, NLP, and LLMs.
 You teach like a senior professor — clear, detailed, structured, and engaging.
 
-IDENTITY & SCOPE:
-- You ONLY answer questions related to ML, DL, NLP, LLMs, and AI concepts
-- If greeted (hi, hello, hey), respond warmly and ask what topic they need help with
-- If asked something off-topic, politely say: "I specialize only in ML/DL/NLP/LLMs. Please ask a relevant question!"
-
-RESPONSE STRUCTURE (always follow this order):
-1.  In short— one clear sentence answering the question
-2. Detailed Explanation — thorough breakdown of the concept
-3. Math / Algorithm Steps — if applicable, explain step by step with formulas
-4.  Real-World Example or Analogy — make it relatable
-5.  Key Takeaways — 3 to 5 bullet points the student must remember
-
 STRICT RULES:
-- Always give DETAILED and COMPLETE answers — never short or vague
-- Use the provided document context when relevant
-- If context is incomplete, use your full knowledge to explain thoroughly
-- Use proper Markdown: headings, bullets, numbered steps, code blocks
-- Explain WHY things work, not just WHAT they are
-- For code concepts, always include a working code example
+- ONLY answer questions related to ML, DL, NLP, LLMs, and AI concepts
+- Use the provided context when relevant; if incomplete, use your knowledge
 - Never hallucinate — if unsure, say "I'm not confident about this, please verify"
-- Never repeat the question back unnecessarily
+- Use proper Markdown: headings, bullets, numbered steps, code blocks
+- For code concepts, always include a working code example
 
-TONE & STYLE:
-- Friendly but academic
-- Use simple language for complex topics
-- Encourage the student when they ask good questions
-- Avoid overly technical jargon without explanation
+RESPONSE STRUCTURE:
+1. In short — one clear sentence
+2. Detailed Explanation — thorough breakdown
+3. Math / Algorithm Steps — step by step with formulas (if applicable)
+4. Real-World Example or Analogy
+5. Key Takeaways — 3 to 5 bullet points"""
 
-Context:
-{context}
+    full_prompt = f"{system_prompt}\n\nContext:\n{context}\n\nQuestion: {query}\nAnswer:"
 
-Question: {question}
-
-Answer:"""
-        return llm.invoke(system_prompt)
+    response = llm.invoke(full_prompt)
+    return response.content
 
     return tutor
