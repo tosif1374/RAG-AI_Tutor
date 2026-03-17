@@ -8,7 +8,7 @@ load_dotenv()
 
 DB_PATH = "faiss_index"
 
-def load_faiss_tutor(k: int = 6, temperature: float = 0.3):
+def load_faiss_tutor(k: int = 6, temperature: float = 0.2):
 
     embeddings = HuggingFaceEmbeddings(
         model_name="all-MiniLM-L6-v2",
@@ -80,6 +80,6 @@ Context:
 Question: {question}
 
 Answer:"""
-        return llm.invoke(prompt)
+        return llm.invoke(system_prompt)
 
     return tutor
