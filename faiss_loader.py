@@ -43,7 +43,7 @@ def load_faiss_tutor(k: int = 6, temperature: float = 0.2):
 
         greetings = ["hi", "hello", "hey", "hlo", "sup", "yo", "good morning", "greetings"]
         if query.strip().lower() in greetings:
-            return "👋 Hello! I'm your AI Tutor. Ask me anything about Machine Learning, Deep Learning, NLP, or LLMs!"
+            return "👋 Hello! I'm your AI Tutor. Ask me anything about ML, DL, NLP, or LLMs!"
 
         ml_keywords = [
             "machine learning", "deep learning", "nlp", "neural", "model", "training",
@@ -70,14 +70,13 @@ STRICT RULES:
 - For code concepts, always include a working code example
 
 RESPONSE STRUCTURE:
-1. 🎯 Direct Answer — one clear sentence
-2. 📖 Detailed Explanation — thorough breakdown
-3. 🔢 Math / Algorithm Steps — step by step with formulas (if applicable)
-4. 💡 Real-World Example or Analogy
-5. 🧠 Key Takeaways — 3 to 5 bullet points"""
+1. Direct Answer — one clear sentence
+2. Detailed Explanation — thorough breakdown
+3.  Math / Algorithm Steps — step by step with formulas (if applicable)
+4.  Real-World Example or Analogy
+5.  Key Takeaways — 3 to 5 bullet points"""
 
         full_prompt = f"{system_prompt}\n\nContext:\n{context}\n\nQuestion: {query}\nAnswer:"
-
         response = llm.invoke(full_prompt)
         return response.content
 
